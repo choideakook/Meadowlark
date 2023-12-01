@@ -3,12 +3,16 @@ const { engine } = require('express-handlebars');
 const app = express();
 const port =  3000;
 
+
 //-- view setting --//
 app.engine('handlebars', engine({
     defaultLayout: 'main',
 }));
 app.set("view engine", "handlebars");
 
+
+//-- public --//
+app.use(express.static(__dirname + '/public'))
 
 //-- API --//
 app.get('/', (req, res) => {
