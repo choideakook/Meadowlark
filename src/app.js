@@ -24,10 +24,14 @@ app.get('/about', handlers.about)
 app.use(handlers.notFound)
 app.use(handlers.serverError)
 
-app.listen(port, () => {
-    start('EXPRESS  START')
-    console.log(
-        `Express started on http://localhost:${port};`,
-        `\npress Ctrl-C to terminate.`
-    )
-})
+if(require.main === module) {
+    app.listen(port, () => {
+        start('EXPRESS  START')
+        console.log(
+            `Express started on http://localhost:${port};`,
+            `\npress Ctrl-C to terminate.`
+        )
+    })
+} else {
+    module.exports = app
+}
