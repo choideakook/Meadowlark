@@ -7,11 +7,18 @@ const { start } = require('./lib/fg')
 const handlers = require('./lib/handlers');
 
 //-- view setting --//
-app.engine('handlebars', engine({
+app.engine('.hbs', engine({
+    extname: '.hbs',
     defaultLayout: 'main',
+    helpers: {
+        section: function (name, options) {
+            if (!this._sections) this._sections = {}
+            this._sections[name] = options.fn(this)
+            return null
+        },
+    },
 }));
-app.set("view engine", "handlebars");
-
+app.set('view engine', '.hbs');
 
 //-- public --//
 app.use(express.static(__dirname + '/public'))
