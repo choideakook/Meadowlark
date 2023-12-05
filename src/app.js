@@ -20,6 +20,7 @@ app.use(express.static(__dirname + '/public'))
 //-- API --//
 app.get('/', handlers.home)
 app.get('/about', handlers.about)
+app.get('/headers', handlers.header)
 
 app.use(handlers.notFound)
 app.use(handlers.serverError)
