@@ -3,6 +3,8 @@ const { engine } = require('express-handlebars');
 const app = express();
 const port =  3000;
 const { start } = require('./lib/fg')
+const weatherMiddleware = require('./lib/middleware/weather')
+const bodyParser = require('body-parser')
 
 const handlers = require('./lib/handlers');
 
@@ -19,15 +21,22 @@ app.engine('.hbs', engine({
     },
 }));
 app.set('view engine', '.hbs');
+app.use(weatherMiddleware);
+
 
 //-- public --//
 app.use(express.static(__dirname + '/public'))
+
+
+//-- application setting --//
+app.use(bodyParser.urlencoded({extended: true}))
 
 
 //-- API --//
 app.get('/', handlers.home)
 app.get('/about', handlers.about)
 app.get('/headers', handlers.header)
+app.get('/section', handlers.sectionTest)
 
 app.use(handlers.notFound)
 app.use(handlers.serverError)

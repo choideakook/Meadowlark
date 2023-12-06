@@ -9,6 +9,8 @@ exports.header = (req, res) => {
     res.send(headers.join('\n'))
 }
 
+exports.sectionTest = (req, res) => res.render('section-test')
+
 exports.notFound = (req, res) => res.render('404');
 
 /* eslint-disable no-unused-vars */
