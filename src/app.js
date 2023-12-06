@@ -38,6 +38,10 @@ app.get('/about', handlers.about)
 app.get('/headers', handlers.header)
 app.get('/section', handlers.sectionTest)
 
+app.get('/newsletter-signup', handlers.newsletterSignup)
+app.post('/newsletter-signup/process', handlers.newsletterSignupProcess)
+app.get('/newsletter-signup/thank-you', handlers.newsletterSignupThankYou)
+
 app.use(handlers.notFound)
 app.use(handlers.serverError)
 
