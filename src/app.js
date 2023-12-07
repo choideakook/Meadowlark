@@ -5,6 +5,7 @@ const port =  3000;
 const { start } = require('./lib/fg')
 const weatherMiddleware = require('./lib/middleware/weather')
 const bodyParser = require('body-parser')
+const multiparty = require('multiparty')
 
 const handlers = require('./lib/handlers');
 
@@ -45,6 +46,16 @@ app.get('/newsletter-signup/thank-you', handlers.newsletterSignupThankYou)
 
 app.get('/newsletter', handlers.newsletter)
 app.post('/api/newsletter-signup', handlers.api.newsletterSignup)
+
+app.get('/vacation', handlers.vacation)
+app.post('/api/vacation', (res, req) => {
+    const form = new multiparty.Form()
+    form.parse(req, (err, fields, files) => {
+        if(err) return res.status(500).send({ error: err.message })
+        handlers.api.vacationProcess(req, res, fields, files)
+    })
+})
+
 
 app.use(handlers.notFound)
 app.use(handlers.serverError)

@@ -41,8 +41,20 @@ exports.api = {
         console.log('Name :', req.body.name)
         console.log('Email :', req.body.email)
         res.send({ result: 'success' })
+    },
+
+    vacationProcess : (req, res, fields, files) => {
+        console.log('field data :', fields)
+        console.log('files :', files)
+        res.send({ result: 'success' })
     }
 }
+
+//-- 파일 업로드 --//
+exports.vacation = (req, res) => {
+    res.render('contest/vacation')
+}
+
 
 
 //-- error --//
