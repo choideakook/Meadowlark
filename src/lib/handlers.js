@@ -1,6 +1,7 @@
 exports.home = (req, res) => res.render('home');
-
 exports.about = (req, res) => res.render('about')
+
+exports.sectionTest = (req, res) => res.render('section-test')
 
 exports.header = (req, res) => {
     res.type('text/plain')
@@ -9,7 +10,10 @@ exports.header = (req, res) => {
     res.send(headers.join('\n'))
 }
 
+
+//-- post 방식 --//
 exports.newsletterSignup = (req, res) => {
+    console.log('요청 확인')
     res.render('newsletter-signup', {csrf: 'token here'})
 }
 
@@ -25,10 +29,24 @@ exports.newsletterSignupThankYou = (req, res) => {
     res.render('newsletter-signup-thank-you')
 }
 
-exports.sectionTest = (req, res) => res.render('section-test')
+//-- fetch 방식 --//
+exports.newsletter = (req, res) => {
+    res.render('newsletter', { CSRF: 'token here' })
+}
 
+exports.api = {
+    newsletterSignup : (req, res) => {
+        console.log('Form (from query) :', req.query.form)
+        console.log('CSRF (from hidden form field) :', req.body._csrf)
+        console.log('Name :', req.body.name)
+        console.log('Email :', req.body.email)
+        res.send({ result: 'success' })
+    }
+}
+
+
+//-- error --//
 exports.notFound = (req, res) => res.render('404');
-
 /* eslint-disable no-unused-vars */
 exports.serverError = (ERR, req, res, next) => res.render('500');
 /* eslint-disable no-unused-vars */
