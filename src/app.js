@@ -6,6 +6,7 @@ const { start } = require('./lib/fg')
 const weatherMiddleware = require('./lib/middleware/weather')
 const bodyParser = require('body-parser')
 const multiparty = require('multiparty')
+const credentials = require('../.credentails/development.json')
 
 const handlers = require('./lib/handlers');
 
