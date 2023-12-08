@@ -7,6 +7,8 @@ const weatherMiddleware = require('./lib/middleware/weather')
 const bodyParser = require('body-parser')
 const multiparty = require('multiparty')
 const credentials = require('../.credentails/development.json')
+const cookieParser = require('cookie-parser')
+const expressSession = require('express-session')
 
 const handlers = require('./lib/handlers');
 
@@ -31,6 +33,12 @@ app.use(express.static(__dirname + '/public'))
 
 
 //-- application setting --//
+app.use(cookieParser(credentials.cookieSecret))
+app.use(expressSession({
+    resave: false,
+    saveUninitialized: false,
+    secret: credentials.cookieSecret,
+}))
 app.use(bodyParser.urlencoded({extended: true}))
 app.use(bodyParser.json())
 
