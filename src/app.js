@@ -4,6 +4,7 @@ const app = express();
 const port =  3000;
 const { start } = require('./lib/fg')
 const weatherMiddleware = require('./lib/middleware/weather')
+const flashMiddleware = require('./lib/middleware/flash')
 const bodyParser = require('body-parser')
 const multiparty = require('multiparty')
 const credentials = require('../.credentails/development.json')
@@ -11,6 +12,7 @@ const cookieParser = require('cookie-parser')
 const expressSession = require('express-session')
 
 const handlers = require('./lib/handlers');
+
 
 //-- view setting --//
 app.engine('.hbs', engine({
@@ -25,7 +27,6 @@ app.engine('.hbs', engine({
     },
 }));
 app.set('view engine', '.hbs');
-app.use(weatherMiddleware);
 
 
 //-- public --//
@@ -43,6 +44,11 @@ app.use(bodyParser.urlencoded({extended: true}))
 app.use(bodyParser.json())
 
 
+//-- lib middle wear --//
+app.use(weatherMiddleware);
+app.use(flashMiddleware);
+
+
 //-- API --//
 app.get('/', handlers.home)
 app.get('/about', handlers.about)
@@ -52,6 +58,7 @@ app.get('/section', handlers.sectionTest)
 app.get('/newsletter-signup', handlers.newsletterSignup)
 app.post('/newsletter-signup/process', handlers.newsletterSignupProcess)
 app.get('/newsletter-signup/thank-you', handlers.newsletterSignupThankYou)
+app.get('/newsletter-archive', handlers.archive)
 
 app.get('/newsletter', handlers.newsletter)
 app.post('/api/newsletter-signup', handlers.api.newsletterSignup)
