@@ -1,6 +1,6 @@
 const express = require('express');
-const { engine } = require('express-handlebars');
 const app = express();
+const { engine } = require('express-handlebars');
 const port =  3000;
 const { start } = require('./lib/fg')
 const weatherMiddleware = require('./lib/middleware/weather')
@@ -29,7 +29,7 @@ app.engine('.hbs', engine({
 app.set('view engine', '.hbs');
 
 
-//-- public --//
+//-- static --//
 app.use(express.static(__dirname + '/public'))
 
 
@@ -49,7 +49,7 @@ app.use(weatherMiddleware);
 app.use(flashMiddleware);
 
 
-//-- API --//
+//-- rout handler --//
 app.get('/', handlers.home)
 app.get('/about', handlers.about)
 app.get('/headers', handlers.header)
@@ -72,7 +72,7 @@ app.post('/api/vacation', (res, req) => {
     })
 })
 
-
+//-- fallback handler --//
 app.use(handlers.notFound)
 app.use(handlers.serverError)
 
