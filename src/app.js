@@ -1,18 +1,21 @@
 const express = require('express');
 const app = express();
-const { engine } = require('express-handlebars');
 const port =  3000;
-const { start } = require('./lib/fg')
-const weatherMiddleware = require('./lib/middleware/weather')
-const flashMiddleware = require('./lib/middleware/flash')
+
+const { engine } = require('express-handlebars');
 const bodyParser = require('body-parser')
 const multiparty = require('multiparty')
-const credentials = require('../.credentails/development.json')
 const cookieParser = require('cookie-parser')
 const expressSession = require('express-session')
 
 const handlers = require('./lib/handlers');
+const { start } = require('./lib/fg')
+const credentials = require('../.credentails/development.json')
+const logging = require('./lib/logging')
+const flashMiddleware = require('./lib/middleware/flash')
+const weatherMiddleware = require('./lib/middleware/weather')
 
+logging.configure(app);
 
 //-- view setting --//
 app.engine('.hbs', engine({
@@ -72,6 +75,7 @@ app.post('/api/vacation', (res, req) => {
     })
 })
 
+
 //-- fallback handler --//
 app.use(handlers.notFound)
 app.use(handlers.serverError)
@@ -80,7 +84,7 @@ if(require.main === module) {
     app.listen(port, () => {
         start('EXPRESS  START')
         console.log(
-            `Express started on http://localhost:${port};`,
+            `Express ${app.get('env')} mode started on http://localhost:${port};`,
             `\npress Ctrl-C to terminate.`
         )
     })
