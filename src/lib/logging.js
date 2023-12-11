@@ -1,7 +1,7 @@
 const morgan = require('morgan')
 const fs = require('fs')
 
-exports.configure = (app) => {
+exports.logging = (app) => {
     switch (app.get('env')) {
         case 'development' :
             app.use(morgan('dev'))

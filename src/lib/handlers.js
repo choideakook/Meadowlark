@@ -13,7 +13,6 @@ class NewsletterSignup {
 
 
 exports.home = (req, res) => {
-    console.log('홈페이지 접속 확인')
     res.render('home');
 }
 exports.about = (req, res) => {

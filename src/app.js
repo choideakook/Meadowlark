@@ -11,11 +11,10 @@ const expressSession = require('express-session')
 const handlers = require('./lib/handlers');
 const { start } = require('./lib/fg')
 const credentials = require('../.credentails/development.json')
-const logging = require('./lib/logging')
+const { logging } = require('./lib/logging')
 const flashMiddleware = require('./lib/middleware/flash')
 const weatherMiddleware = require('./lib/middleware/weather')
 
-logging.configure(app);
 
 //-- view setting --//
 app.engine('.hbs', engine({
@@ -50,6 +49,7 @@ app.use(bodyParser.json())
 //-- lib middle wear --//
 app.use(weatherMiddleware);
 app.use(flashMiddleware);
+logging(app);
 
 
 //-- rout handler --//
