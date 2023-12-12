@@ -75,12 +75,16 @@ app.post('/api/vacation', (res, req) => {
     })
 })
 
+app.get('/fail', handlers.fail)
+
 
 //-- fallback handler --//
 app.use(handlers.notFound)
 app.use(handlers.serverError)
 
-if(require.main === module) {
+
+//-- application start --//
+function startServer(port) {
     app.listen(port, () => {
         start('EXPRESS  START')
         console.log(
@@ -88,6 +92,10 @@ if(require.main === module) {
             `\npress Ctrl-C to terminate.`
         )
     })
+}
+
+if(require.main === module) {
+    startServer(process.env.PORT || 3000)
 } else {
-    module.exports = app
+    module.exports = startServer
 }

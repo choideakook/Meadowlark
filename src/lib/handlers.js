@@ -1,4 +1,5 @@
 const {render} = require("express/lib/application");
+const cluster = require('cluster')
 
 class NewsletterSignup {
     constructor({ name, email }) {
@@ -13,6 +14,8 @@ class NewsletterSignup {
 
 
 exports.home = (req, res) => {
+    if (cluster.isWorker)
+        console.log(`Worker ${cluster.worker.id} 가 실행중`)
     res.render('home');
 }
 exports.about = (req, res) => {
@@ -102,10 +105,17 @@ exports.vacation = (req, res) => {
     res.render('contest/vacation')
 }
 
-
+exports.fail = (req, res) => {
+    process.nextTick(() =>
+        throw new Error('kaboom!')
+    )
+}
 
 //-- error --//
 exports.notFound = (req, res) => res.render('404');
 /* eslint-disable no-unused-vars */
-exports.serverError = (ERR, req, res, next) => res.render('500');
+exports.serverError = (err, req, res, next) => {
+    console.error('err : ', err)
+    res.render('500', {err: err});
+}
 /* eslint-disable no-unused-vars */
