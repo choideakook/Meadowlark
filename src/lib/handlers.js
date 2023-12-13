@@ -106,14 +106,14 @@ exports.vacation = (req, res) => {
     res.render('contest/vacation')
 }
 
-//-- db 조회 --//
+//-- mongoose 사용 --//
 exports.listVacations = async (req, res) => {
     const vacations = await db.getVacations({ available: true })
     const context = {
         vacations: vacations.map(vacation => ({
             sku: vacation.sku,
             name: vacation.name,
-            description: vacation.descripation,
+            description: vacation.description,
             price: '$' + (vacation.priceInCents / 100).toFixed(2),
             inSeason: vacation.inSeason,
         }))
@@ -121,6 +121,13 @@ exports.listVacations = async (req, res) => {
     res.render('vacations', context);
 }
 
+exports.notifyWhenInSeasonForm = (req, res) => res.render('notify-me-when-in-season', { sku: req.query.sku })
+
+exports.notifyWhenInSeasonProcess = async (req, res) => {
+    const { email, sku } = req.body
+    await db.addVacationInSeasonListener(email, sku)
+    return res.redirect(303, '/vacations')
+}
 
 //-- error --//
 exports.notFound = (req, res) => res.render('404');

@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 const { connectionString } = require('../../../.credentails/development.json')
 const Vacation = require('../../models/vacation')
-const {vacation} = require("../handlers");
+const VacationInSeasonListener = require('../../models/vacationInSeasonListener')
 
 if (!connectionString) {
     console.error('MongoDB connection string missing!')
@@ -74,30 +74,14 @@ Vacation.find().exec().then(vacations => {
 module.exports = {
 
     // 휴가 패키지 리스트
-    getVacations: async (options = {}) => {
-        const vacations = [
-            {
-                name: 'Hood River Day Trip',
-                slug: 'hood-river-day-trip',
-                category: 'Day Trip',
-                sku: 'HR199',
-                description: 'Spend a day sailing on the Columbia and ' +
-                    'enjoying craft beers in Hood River!',
-                priceInCents: 9995,
-                tags: ['day trip', 'hood river', 'sailing', 'windsurfing', 'breweries'],
-                inSeason: true,
-                maximumGuests: 16,
-                available: true,
-                packagesSold: 0,
-            }
-        ]
-        if (options.available !== undefined)
-            return vacations.filter(({ available }) => available === options.available)
-        return vacations
-    },
+    getVacations: async (options = {}) => Vacation.find(options),
 
     // 패키지 알림을 받는 사용자 이메일
     addVacationInSeasonListener: async (email, sku) => {
-
+        await VacationInSeasonListener.updateOne(
+            {email},
+            {$push: {skus: sku}},
+            {upsert: true}
+        )
     }
 }

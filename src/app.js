@@ -14,7 +14,6 @@ const credentials = require('../.credentails/development.json')
 const { logging } = require('./lib/logging')
 const flashMiddleware = require('./lib/middleware/flash')
 const weatherMiddleware = require('./lib/middleware/weather')
-const {mongo} = require("mongoose");
 require('./lib/mongodb/mdb')
 
 
@@ -80,6 +79,8 @@ app.post('/api/vacation', (res, req) => {
 
 
 app.get('/vacations', handlers.listVacations)
+app.get('/notify-me-when-in-season', handlers.notifyWhenInSeasonForm)
+app.post('/notify-me-when-in-season', handlers.notifyWhenInSeasonProcess)
 
 
 //-- fallback handler --//
