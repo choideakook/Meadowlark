@@ -1,5 +1,6 @@
 const {render} = require("express/lib/application");
 const cluster = require('cluster')
+const db = require('./mongodb/mdb')
 
 class NewsletterSignup {
     constructor({ name, email }) {
@@ -105,11 +106,21 @@ exports.vacation = (req, res) => {
     res.render('contest/vacation')
 }
 
-exports.fail = (req, res) => {
-    process.nextTick(() =>
-        throw new Error('kaboom!')
-    )
+//-- db 조회 --//
+exports.listVacations = async (req, res) => {
+    const vacations = await db.getVacations({ available: true })
+    const context = {
+        vacations: vacations.map(vacation => ({
+            sku: vacation.sku,
+            name: vacation.name,
+            description: vacation.descripation,
+            price: '$' + (vacation.priceInCents / 100).toFixed(2),
+            inSeason: vacation.inSeason,
+        }))
+    }
+    res.render('vacations', context);
 }
+
 
 //-- error --//
 exports.notFound = (req, res) => res.render('404');

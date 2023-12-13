@@ -1,33 +1,27 @@
-module.exports = {
+const mongoose = require('mongoose')
 
-    // 휴가 패키지 리스트
-    getVacations: async (options = {}) => {
-        const vacations = [
-            {
-                name: String,
-                slug: String,
-                category: String,
-                sku: String,
-                description: String,
-                location: {
-                    search: String,
-                },
-                priceInCents: Number,
-                tags: [String],
-                inSeason: Boolean,
-                maximumGuests: Number,
-                available: Boolean,
-                requiresWaiver: Boolean,
-                packagesSold: Number,
-            }
-        ]
-        if (options.available !== undefined)
-            return vacations.filter(({ available }) => available === options.available)
-        return vacations
+const vacationSchema = mongoose.Schema({
+    name: String,
+    slug: String,
+    category: String,
+    sku: String,
+    description: String,
+    location: {
+        search: String,
+        coordinates: {
+            lat: Number,
+            lng: Number,
+        },
     },
+    priceInCents: Number,
+    tags: [String],
+    inSeason: Boolean,
+    available: Boolean,
+    requiresWaiver: Boolean,
+    maximumGuests: Number,
+    notes: String,
+    packagesSold: Number,
+})
 
-    // 패키지 알림을 받는 사용자 이메일
-    addVacationInSeasonListener: async (email, sku) => {
-
-    }
-}
+const Vacation = mongoose.model('Vacation', vacationSchema)
+module.exports = Vacation

@@ -14,6 +14,8 @@ const credentials = require('../.credentails/development.json')
 const { logging } = require('./lib/logging')
 const flashMiddleware = require('./lib/middleware/flash')
 const weatherMiddleware = require('./lib/middleware/weather')
+const {mongo} = require("mongoose");
+require('./lib/mongodb/mdb')
 
 
 //-- view setting --//
@@ -46,6 +48,7 @@ app.use(bodyParser.urlencoded({extended: true}))
 app.use(bodyParser.json())
 
 
+
 //-- lib middle wear --//
 app.use(weatherMiddleware);
 app.use(flashMiddleware);
@@ -75,7 +78,8 @@ app.post('/api/vacation', (res, req) => {
     })
 })
 
-app.get('/fail', handlers.fail)
+
+app.get('/vacations', handlers.listVacations)
 
 
 //-- fallback handler --//
