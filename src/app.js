@@ -7,7 +7,8 @@ const bodyParser = require('body-parser')
 const multiparty = require('multiparty')
 const cookieParser = require('cookie-parser')
 const expressSession = require('express-session')
-const RedisStore = require('connect-redis')(expressSession)
+const RedisStore = require('connect-redis')
+const { createClient } = require('redis')
 
 const handlers = require('./lib/handlers');
 const { start } = require('./lib/fg')
@@ -38,15 +39,20 @@ app.use(express.static(__dirname + '/public'))
 
 
 //-- application setting --//
+let redisClient = createClient(credentials.redis.url)
+redisClient.connect().catch(console.error)
+
+let redisStore = new RedisStore({
+    client: redisClient,
+    prefix: "",
+})
+
 app.use(cookieParser(credentials.cookieSecret))
 app.use(expressSession({
     resave: false,
     saveUninitialized: false,
     secret: credentials.cookieSecret,
-    store: new RedisStore({
-        url:credentials.redis.url,
-        logErrors: true
-    })
+    store: redisStore,
 }))
 app.use(bodyParser.urlencoded({extended: true}))
 app.use(bodyParser.json())
