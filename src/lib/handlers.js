@@ -129,6 +129,44 @@ exports.notifyWhenInSeasonProcess = async (req, res) => {
     return res.redirect(303, '/vacations')
 }
 
+
+//-- redis 를 사용한 화폐 패키지 가격 표시 --//
+exports.setCurrency = (req, res) => {
+    req.session.currency = req.params.currency
+    return res.redirect(303, '/vacations')
+}
+
+exports.listVacations2 = async (req, res) => {
+    const vacations = await db.getVacations({ available: true })
+    const currency = req.session.currency || 'USD'
+
+    const context = {
+        vacations: vacations.map(vacation => ({
+            sku: vacation.sku,
+            name: vacation.name,
+            description: vacation.description,
+            price: convertFromUSD(vacation, currency),
+            inSeason: vacation.inSeason,
+        }))
+    }
+    res.render('vacations', context);
+}
+
+function convertFromUSD(vacation, currency) {
+    let value = vacation.price || (vacation.priceInCents / 100),
+        decimals = currency === 'BTC' ? 6 : 2;
+
+    switch (currency) {
+        case 'USD' : value *= 1; break;
+        case 'GBP' : value *= 0.79; break;
+        case 'BTC' : value *= 0.000078; break;
+        default: value = NaN
+    }
+    return `${currency} ${value.toFixed(decimals)}`;
+}
+
+
+
 //-- error --//
 exports.notFound = (req, res) => res.render('404');
 /* eslint-disable no-unused-vars */
