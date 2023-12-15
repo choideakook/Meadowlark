@@ -3,7 +3,6 @@ const app = express();
 
 const { engine } = require('express-handlebars');
 const bodyParser = require('body-parser')
-const multiparty = require('multiparty')
 const cookieParser = require('cookie-parser')
 const expressSession = require('express-session')
 
@@ -13,6 +12,7 @@ const credentials = require('../.credentails/development.json')
 const { logging } = require('./lib/logging')
 const flashMiddleware = require('./lib/middleware/flash')
 const weatherMiddleware = require('./lib/middleware/weather')
+const { routes } = require('./routes/routes')
 require('./lib/mongodb/mdb')
 
 
@@ -51,41 +51,8 @@ app.use(weatherMiddleware);
 app.use(flashMiddleware);
 logging(app);
 
+app.use(routes)
 
-//-- rout handler --//
-app.get('/', handlers.home)
-app.get('/about', handlers.about)
-app.get('/headers', handlers.header)
-app.get('/section', handlers.sectionTest)
-
-app.get('/newsletter-signup', handlers.newsletterSignup)
-app.post('/newsletter-signup/process', handlers.newsletterSignupProcess)
-app.get('/newsletter-signup/thank-you', handlers.newsletterSignupThankYou)
-app.get('/newsletter-archive', handlers.archive)
-
-app.get('/newsletter', handlers.newsletter)
-app.post('/api/newsletter-signup', handlers.api.newsletterSignup)
-
-app.get('/vacation', handlers.vacation)
-app.post('/api/vacation', (res, req) => {
-    const form = new multiparty.Form()
-    form.parse(req, (err, fields, files) => {
-        if(err) return res.status(500).send({ error: err.message })
-        handlers.api.vacationProcess(req, res, fields, files)
-    })
-})
-
-
-app.get('/vacations', handlers.listVacations2)
-app.get('/notify-me-when-in-season', handlers.notifyWhenInSeasonForm)
-app.post('/notify-me-when-in-season', handlers.notifyWhenInSeasonProcess)
-
-app.get('/set-currency/:currency', handlers.setCurrency)
-
-
-//-- fallback handler --//
-app.use(handlers.notFound)
-app.use(handlers.serverError)
 
 
 //-- application start --//
